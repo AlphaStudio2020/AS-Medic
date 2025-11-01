@@ -17,7 +17,7 @@ A simple and optimized **ESX NPC Medic** script that lets players heal or revive
 
 ## 🧩 Requirements
 - [ESX Framework](https://github.com/esx-framework/esx_core)  
-- (Optional) [as-menu](https://github.com/as-development/as-menu)  
+- (Optional) [as-menu]()  SOON
 - MySQL-Async (already referenced)
 
 ---
@@ -25,7 +25,7 @@ A simple and optimized **ESX NPC Medic** script that lets players heal or revive
 ## ⚙️ Installation
 1. Download or clone this repository:
    ```bash
-   git clone https://github.com/DEINNAME/as-medical.git
+   git clone https://github.com/AlphaStudio2020/as-medical.git
    ```
 2. Place the folder into your `resources` directory:
    ```
@@ -65,17 +65,12 @@ as-medical/
 └── server.lua
 ```
 
----
 
-## 📸 Preview
-*(Add your screenshot or GIF here)*
-
----
 
 ## 🧑‍💻 Author
 **AS.DEV**  
 Discord: *yourname#0000*  
-GitHub: [github.com/yourname](https://github.com/yourname)
+GitHub: [github.com/yourname](https://github.com/AlphaStudio2020)
 
 ---
 
