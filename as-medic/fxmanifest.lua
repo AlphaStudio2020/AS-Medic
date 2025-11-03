@@ -4,7 +4,7 @@ lua54 'yes'
 
 name 'as-medical'
 author 'AS.DEV'
-description 'NPC-Heiler: Spieler heilen oder wiederbeleben gegen Geld (ESX)'
+description 'NPC Healers: Players Heal or Resurrect for Money (ESX) '
 version '1.0.0'
 
 shared_scripts {
@@ -20,3 +20,5 @@ server_scripts {
     'server.lua'
 }
 
+
+ 
