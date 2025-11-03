@@ -1,9 +1,9 @@
 local ESX = exports[Config.ESXExport]:getSharedObject()
 
 local npcPed, npcBlip = nil, nil
-local npcEnabled = false -- wird vom Server gesetzt
+local npcEnabled = false 
 
--- ========= NPC / Blip Erzeugen & Entfernen =========
+
 local function SpawnNPC()
     if npcPed and DoesEntityExist(npcPed) then return end
 
@@ -47,7 +47,6 @@ local function DespawnNPC()
     npcBlip = nil
 end
 
--- ========= Server steuert Schalter =========
 RegisterNetEvent('npc_medical:setNpcEnabled', function(enabled)
     npcEnabled = enabled and true or false
     if npcEnabled then
@@ -57,12 +56,10 @@ RegisterNetEvent('npc_medical:setNpcEnabled', function(enabled)
     end
 end)
 
--- Beim Client-Start Initialzustand anfragen
 CreateThread(function()
     TriggerServerEvent('npc_medical:requestNpcState')
 end)
 
--- ========= Hilfsfunktionen =========
 local function DrawText3D(x,y,z, text)
     local onScreen,_x,_y = World3dToScreen2d(x,y,z)
     local px,py,pz = table.unpack(GetGameplayCamCoords())
@@ -114,14 +111,13 @@ local function IsTargetDead(clientPlayerId)
     return GetEntityHealth(targetPed) <= 0
 end
 
--- ========= Aktionen (Client) =========
 local function TryHealSelf()
     local ped = PlayerPedId()
     local health = GetEntityHealth(ped)
     local maxHealth = GetEntityMaxHealth(ped)
 
     if health >= maxHealth then
-        ESX.ShowNotification('~y~Du hast bereits volle Gesundheit.')
+        ESX.ShowNotification('~y~You already have full health. ')
         return
     end
     TriggerServerEvent('npc_medical:payAndHeal')
@@ -130,21 +126,20 @@ end
 local function TryReviveOther()
     local target = GetClosestPlayer(Config.ReviveDistance)
     if target == -1 then
-        ESX.ShowNotification('~r~Kein Spieler in der Nähe zum Wiederbeleben.')
+        ESX.ShowNotification('~r~No player close to reviving. ')
         return
     end
     if not IsTargetDead(target) then
-        ESX.ShowNotification('~y~Dieser Spieler lebt bereits und kann nicht wiederbelebt werden.')
+        ESX.ShowNotification('~y~This player is already alive and cannot be revived. ')
         return
     end
     TriggerServerEvent('npc_medical:payAndRevive', GetPlayerServerId(target))
 end
 
--- ========= Menülogik je nach Config =========
 local function OpenMedicalMenu()
     local elements = {
-        {label = ('🩹 Selbst heilen ($%d)'):format(Config.PriceHealSelf), value = 'heal_self'},
-        {label = ('💉 Anderen wiederbeleben (nahe) ($%d)'):format(Config.PriceReviveOther), value = 'revive_other'}
+        {label = ('🩹 Healing yourself  ($%d)'):format(Config.PriceHealSelf), value = 'heal_self'},
+        {label = ('💉 Revive others (close)  ($%d)'):format(Config.PriceReviveOther), value = 'revive_other'}
     }
 
     if Config.MenuType == "as" then
@@ -154,14 +149,14 @@ local function OpenMedicalMenu()
             return
         end
         exports['as-menu']:openMenu({
-            { header = 'Sanitäter (NPC)', isMenuHeader = true },
+            { header = 'Paramedics  (NPC)', isMenuHeader = true },
             {
-                header = '🩹 Selbst heilen',
+                header = '🩹 Healing yourself ',
                 txt = ('$%d'):format(Config.PriceHealSelf),
                 params = { event = 'npc_medical:heal_self' }
             },
             {
-                header = '💉 Anderen wiederbeleben',
+                header = '💉 Revive others ',
                 txt = ('$%d'):format(Config.PriceReviveOther),
                 params = { event = 'npc_medical:revive_other' }
             }
@@ -173,7 +168,7 @@ local function OpenMedicalMenu()
         -- ESX Menu
         ESX.UI.Menu.CloseAll()
         ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'npc_medical_menu', {
-            title = 'Sanitäter (NPC)',
+            title = 'Paramedics  (NPC)',
             align = 'top-left',
             elements = elements
         }, function(data, menu)
@@ -188,8 +183,7 @@ local function OpenMedicalMenu()
         return
     end
 
-    -- Fallback (keine Menüs)
-    ESX.ShowNotification('~b~[E] Heilen  |  [G] Revive naher Spieler')
+    ESX.ShowNotification('~b~[E] Healing   |  [G] Revive close player ')
     local t0 = GetGameTimer()
     while GetGameTimer() - t0 < 7000 do
         if IsControlJustReleased(0, 38) then -- E
@@ -203,11 +197,9 @@ local function OpenMedicalMenu()
     end
 end
 
--- Events für as-menu Buttons
 RegisterNetEvent('npc_medical:heal_self', TryHealSelf)
 RegisterNetEvent('npc_medical:revive_other', TryReviveOther)
 
--- ========= Interaktionsloop (nur wenn NPC aktiv) =========
 CreateThread(function()
     while true do
         local sleep = 1000
@@ -226,15 +218,13 @@ CreateThread(function()
         Wait(sleep)
     end
 end)
-
--- ========= Client-seitige Effekte =========
 RegisterNetEvent('npc_medical:clientHeal', function()
     local ped = PlayerPedId()
     local maxHealth = GetEntityMaxHealth(ped)
     SetEntityHealth(ped, maxHealth)
     ClearPedBloodDamage(ped)
     ResetPedVisibleDamage(ped)
-    ESX.ShowNotification('~g~Du wurdest vollständig geheilt.')
+    ESX.ShowNotification('~g~You have been completely healed. ')
 end)
 
 RegisterNetEvent('npc_medical:clientRevive', function()
@@ -244,5 +234,6 @@ RegisterNetEvent('npc_medical:clientRevive', function()
     ClearPedBloodDamage(ped)
     local maxHealth = GetEntityMaxHealth(ped)
     SetEntityHealth(ped, maxHealth)
-    ESX.ShowNotification('~g~Du wurdest wiederbelebt!')
+    ESX.ShowNotification('~g~You have been revived !')
 end)
+
