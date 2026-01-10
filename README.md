@@ -1,4 +1,4 @@
-# 🏥 AS-Medical | NPC Medic System for ESX
+# 🏥 AGD-Medical | NPC Medic System for ESX
 
 A simple and optimized **ESX NPC Medic** script that lets players heal or revive themselves (or others) via an NPC — only when not enough real medics are online.
 
